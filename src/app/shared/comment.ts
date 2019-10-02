@@ -1,4 +1,4 @@
-export class comment{
+export class Comment{
 	rating: number;
 	comment: string;
 	author: string;
