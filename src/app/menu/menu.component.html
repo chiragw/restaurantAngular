@@ -13,7 +13,7 @@
 
 	<div fxFlex>
 		<mat-grid-list cols="2" rowHeight="200px">
-		<mat-gird-tile *ngFor = "let dish of dishes">
+		<mat-gird-tile *ngFor = "let dish of dishes" (click)="onSelect(dish)">
 			<img height="200px" src={{dish.image}} alt={{dish.name}}>
 			<mat-grid-tile-footer>
 				<h1 mat-line>{{dish.name | uppercase}}</h1>
@@ -22,6 +22,6 @@
 		</mat-grid-list>
 	</div>
 
-<app-dishdetail></app-dishdetail>
+<app-dishdetail [dish] = "selectedDish"></app-dishdetail>
 
 </div>
