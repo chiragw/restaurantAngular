@@ -11,7 +11,7 @@
 		</div>
 	</div>
 
-	<div fxFlex>
+	<div fxFlex *ngIf="dishes">
 		<mat-grid-list cols="2" rowHeight="200px">
 		<mat-gird-tile *ngFor = "let dish of dishes" [routerLink] = "['/dishdetail', dish.id]">
 			<img height="200px" src={{dish.image}} alt={{dish.name}}>
@@ -20,6 +20,11 @@
 			</mat-grid-tile-footer>
 			</mat-gird-tile>
 		</mat-grid-list>
+	</div>
+
+	<div fxFlex [hidden]="dishes">
+		<mat-spinner></mat-spinner>
+		<h4>Loading . . . Please Wait</h4>
 	</div>
 
 </div>
