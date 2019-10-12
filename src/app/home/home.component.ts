@@ -29,5 +29,4 @@ export class HomeComponent implements OnInit {
     this.leaderService.getFeaturedLeader()
     .subscribe((leader) => this.leader = leader);
   }
-
 }
