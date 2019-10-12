@@ -14,6 +14,34 @@ export class ContactComponent implements OnInit {
   contactType = ContactType;
   @ViewChild('fform') feedbackFormDirective;
 
+  formErrors = {
+    'firstname': '',
+    'lastname': '',
+    'telnum': '',
+    'email': ''
+  };
+
+  validationMessages = {
+    'firstname': {
+      'required': 'Firstname is required',
+      'minlength': 'Firstname must be atleast 2 characters long',
+      'maxlength': 'Firstname cannot be more than 25 characters'
+    },
+    'lastname': {
+      'required': 'Lastname is required',
+      'minlength': 'Lastname must be atleast 2 characters long',
+      'maxlength': 'Lastname cannot be more than 25 characters'
+    },
+    'telnum': {
+      'required': 'Telephone number is required',
+      'pattern': 'Telephone number can only contain numbers'
+    },
+    'email': {
+      'required': 'E-mail is required',
+      'email': 'E-mail not in valid format'
+    }
+  };
+
   constructor(private fb: FormBuilder) {
   		this.createForm();
    }
@@ -38,6 +66,27 @@ export class ContactComponent implements OnInit {
       this.onValueChanged();
   }
   
+  onValueChanged(data?: any){
+    if(!this.feedbackForm){
+      return;
+    }
+    const form = this.feedbackForm;
+    for (const field in this.formErrors){
+      if(this.formErrors.hasOwnProperty(field)){
+        //to clear previous error message(if any)
+        this.formErrors[field] = '';
+        const control = form.get(field);
+        if(control && control.dirty && !control.valid){
+          const messages = this.validationMessages[field];
+          for(const key in control.errors){
+            if (control.errors.hasOwnProperty(key)){
+              this.formErrors[field] += messages[key] + '  ';
+            }
+          }
+        }
+      }
+    }
+  }
 
   onSubmit() {
 		this.feedback = this.feedbackForm.value;
