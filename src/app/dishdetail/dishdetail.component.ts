@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { Dish } from '../shared/dish';
 import { Params, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -16,6 +16,7 @@ export class DishdetailComponent implements OnInit {
 
   dish: Dish;
   dishIds: string[];
+  errMess: string;
   prev: string;
   next: string;	
 
@@ -25,12 +26,12 @@ export class DishdetailComponent implements OnInit {
   @ViewChild('dform') commentFormDirective;
 
   formErrors = {
-    'name': '',
+    'author': '',
     'comment': ''
   };
 
   validationMessages = {
-    'name': {
+    'author': {
       'required': 'Author name is required',
       'minlength': 'Author name must be at least 2 characters long'
     },
@@ -40,7 +41,8 @@ export class DishdetailComponent implements OnInit {
   };
 
   constructor(private dishService: DishService, private location: Location
-  	, private route: ActivatedRoute, private fb: FormBuilder) 
+  	, private route: ActivatedRoute, private fb: FormBuilder, 
+    @Inject('BaseURL') private BaseURL) 
   { 
       this.createForm();
   }
@@ -49,8 +51,10 @@ export class DishdetailComponent implements OnInit {
     this.dishService.getDishIds()
         .subscribe((dishIds) => this.dishIds = dishIds);
 
-  	this.route.params.pipe(switchMap((params: Params) => this.dishService.getDish(params['id'])))
-  	    .subscribe(dish => {this.dish = dish; this.setPrevNext(dish.id); });
+  	this.route.params
+      .pipe(switchMap((params: Params) => this.dishService.getDish(params['id'])))
+  	  .subscribe(dish => {this.dish = dish; this.setPrevNext(dish.id); }, 
+        errmess => this.errMess = <any>errmess);
   }
 
   setPrevNext(dishId: string){
@@ -65,7 +69,7 @@ export class DishdetailComponent implements OnInit {
 
   createForm(){
     this.commentForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(2)]],
+      author: ['', [Validators.required, Validators.minLength(2)]],
       comment: ['', [Validators.required]],
       rating: 5
     });
@@ -104,7 +108,7 @@ onValueChanged(data?: any){
     this.dish.comments.push(this.comment);
     this.comment = null;
     this.commentForm.reset({
-      name: '',
+      author: '',
       comment: '',
       rating: 5
     });
